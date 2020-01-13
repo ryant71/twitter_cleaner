@@ -15,10 +15,10 @@ from auth import consumer_key, consumer_secret, \
 
 import tweepy
 
-sleeptime = 0.5
+sleeptime = 0.1
 exception_sleeptime = 60
 
-do_delete = False
+do_delete = True
 verbose = False
 match_by_date = True
 days_to_keep = 365

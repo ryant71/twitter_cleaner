@@ -1,0 +1,17 @@
+{
+    "production": {
+        "events": [{
+            "function": "twitter_clean.lambda_handler",
+            "expressions": ["cron(8 16 * * ? *)"]
+        }],
+        "aws_region": "eu-west-1",
+        "profile_name": "mine",
+        "project_name": "twitter-cleaner",
+        "runtime": "python3.7",
+        "s3_bucket": "zappa-twit"
+        "keep_warm": false,
+        "apigateway_enabled": false,
+        "memory_size": 128,
+        "timeout_seconds": 300
+    }
+}

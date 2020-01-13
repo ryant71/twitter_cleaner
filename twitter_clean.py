@@ -15,11 +15,13 @@ from auth import consumer_key, consumer_secret, \
 
 import tweepy
 
-sleeptime = 1
-exception_sleeptime = 60*15
+sleeptime = 0.5
+exception_sleeptime = 60
 
+do_delete = False
+verbose = False
 match_by_date = True
-days_to_keep = 30
+days_to_keep = 365
 cutoff_date = datetime.utcnow() - timedelta(days=days_to_keep)
 
 delete_last_n_tweets = 1
@@ -100,26 +102,8 @@ def last_tweets_manage(api, tweet_list, do_delete):
                 api.destroy_status(item.id)
 
 
-def main(screen_name, do_delete):
+def lambda_handler(event, context):
     api = make_twapi()
     pages = tweepy.Cursor(api.user_timeline, screen_name=screen_name).pages()
     tweet_list = get_tweet_list(pages)
     last_tweets_manage(api, tweet_list, do_delete)
-
-
-if __name__ == "__main__":
-
-    if '-d' in sys.argv:
-        do_delete = True
-        print('Running in delete mode')
-    else:
-        do_delete = False
-        print('Not deleting tweets. Use \'-d\' to run in delete mode')
-
-    global verbose
-    if '-v' in sys.argv:
-        verbose = True
-    else:
-        verbose = False
-
-    main(screen_name, do_delete)

@@ -1,32 +1,30 @@
 #!/usr/bin/env python
 
 """
-...
+https://www.karambelkar.info/2015/01/how-to-use-twitters-search-rest-api-most-effectively./
 """
-
-# https://www.karambelkar.info/2015/01/how-to-use-twitters-search-rest-api-most-effectively./
 
 import sys
 import time
-
+import tweepy
 from datetime import datetime, timedelta
 from auth import consumer_key, consumer_secret, \
         access_token_key, access_token_secret, screen_name
 
-import tweepy
 
 sleeptime = 0.1
 exception_sleeptime = 60
 
 do_delete = True
-verbose = False
+verbose = True
+
 match_by_date = True
-days_to_keep = 365
+days_to_keep = 30
 cutoff_date = datetime.utcnow() - timedelta(days=days_to_keep)
 
-delete_last_n_tweets = 1
+keep_last_n_tweets = 7
 delete_matching = 'me // automatically checked by'
-keep_matching = '#keeper'
+keep_matching = '#keep'
 keybase_matching = 'GF-1BjCID_I45YXm_UIqknVq0gjbAvKhGLOC'
 
 
@@ -75,22 +73,23 @@ def print_tweet(entry, msg=""):
         entry.retweet_count,
         entry.text,
         media_url)
-    vprint(output)
+    print(output)
 
 
 def last_tweets_manage(api, tweet_list, do_delete):
-    print('list count =' + str(len(tweet_list)))
+    print('tweet_list: ' + str(len(tweet_list)))
+    print('cutoff_date: ', cutoff_date)
     tweet_list_subset = []
     if delete_matching:
         tweet_list_subset += [tweet for tweet in tweet_list if delete_matching in tweet.text]
     if match_by_date:
         tweet_list_subset += [tweet for tweet in tweet_list if tweet.created_at < cutoff_date]
-    else:
-        tweet_list_subset = tweet_list[::-1][:delete_last_n_tweets]
-        if len(tweet_list_subset) <= delete_last_n_tweets:
-            return
+    print('tweet_list_subset: ', len(tweet_list_subset))
+    if len(tweet_list) <= keep_last_n_tweets:
+        print('Too few tweets to delete')
+        return
     for item in tweet_list_subset:
-        if item.favorite_count >= 10:
+        if item.favorite_count >= 1000:
             print_tweet(item, 'KEEP favourite')
         elif keep_matching in item.text:
             print_tweet(item, 'KEEP match')

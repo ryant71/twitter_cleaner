@@ -2,7 +2,8 @@
     "production": {
         "events": [{
             "function": "twitter_clean.lambda_handler",
-            "expressions": ["cron(0 0 * * ? *)"]
+            // "expressions": ["cron(15 0 * * ? *)"]
+            "expression": "rate(3 hours)"
         }],
         "aws_region": "eu-west-1",
         "profile_name": "mine",
@@ -12,6 +13,8 @@
         "keep_warm": false,
         "apigateway_enabled": false,
         "memory_size": 128,
+        "debug": false,
+        "log_level": "CRITICAL",
         "timeout_seconds": 300
     }
 }

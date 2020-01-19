@@ -8,11 +8,11 @@ import sys
 import time
 import tweepy
 from datetime import datetime, timedelta
-from auth import consumer_key, consumer_secret, \
-        access_token_key, access_token_secret, screen_name
+from auth import consumer_key, consumer_secret
+from auth import access_token_key, access_token_secret, screen_name
 
 
-sleeptime = 0.1
+sleeptime = 0.2
 exception_sleeptime = 60
 
 do_delete = True
@@ -39,25 +39,46 @@ def make_twapi():
     return tweepy.API(appauth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 
-def get_tweet_list(pages):
+def get_timeline_list(timeline_pages):
     pnum = 0
-    tweet_list = []
+    timeline_list = []
     while True:
         try:
-            page = next(pages)
+            page = next(timeline_pages)
             time.sleep(sleeptime)
         except tweepy.TweepError:  # rate limit exceeded (180 queries per 15m)
             vprint('Sleeping...')
             time.sleep(exception_sleeptime)
-            page = next(pages)
-        except StopIteration: # no more pages
+            page = next(timeline_pages)
+        except StopIteration: # no more timeline_pages
             vprint('Done')
             break
         pnum += 1
-        vprint('### Page number: %d ####' % pnum)
+        vprint('### timeline page number: %d ####' % pnum)
         for entry in page:
-            tweet_list.append(entry)
-    return tweet_list
+            timeline_list.append(entry)
+    return timeline_list
+
+
+def get_favorites_list(favourites_pages):
+    fnum = 0
+    favorites_list = []
+    while True:
+        try:
+            page = next(favourites_pages)
+            time.sleep(sleeptime)
+        except tweepy.TweepError:
+            vprint('Sleeping')
+            time.sleep(exception_sleeptime)
+            page = next(favourites_pages)
+        except StopIteration:
+            vprint('Done favorites')
+            break
+        fnum += 1
+        vprint('### favorites page number: %d ####' % fnum)
+        for entry in page:
+            favorites_list.append(entry)
+    return favorites_list
 
 
 def print_tweet(entry, msg=""):
@@ -76,33 +97,48 @@ def print_tweet(entry, msg=""):
     print(output)
 
 
-def last_tweets_manage(api, tweet_list, do_delete):
-    print('tweet_list: ' + str(len(tweet_list)))
+def delete_tweet_items(api, timeline_list, favorites_list, do_delete):
+    print('timeline_list: ' + str(len(timeline_list)))
     print('cutoff_date: ', cutoff_date)
-    tweet_list_subset = []
+    timeline_list_subset = []
+    favorites_list_subset = []
     if delete_matching:
-        tweet_list_subset += [tweet for tweet in tweet_list if delete_matching in tweet.text]
+        timeline_list_subset += [tweet for tweet in timeline_list if delete_matching in tweet.text]
     if match_by_date:
-        tweet_list_subset += [tweet for tweet in tweet_list if tweet.created_at < cutoff_date]
-    print('tweet_list_subset: ', len(tweet_list_subset))
-    if len(tweet_list) <= keep_last_n_tweets:
+        timeline_list_subset += [tweet for tweet in timeline_list if tweet.created_at < cutoff_date]
+        favorites_list_subset += [fav for fav in favorites_list if fav.created_at < cutoff_date]
+    print('timeline_list_subset: ', len(timeline_list_subset))
+    print('favorites_list_subset', len(favorites_list_subset))
+    if len(timeline_list) <= keep_last_n_tweets:
         print('Too few tweets to delete')
         return
-    for item in tweet_list_subset:
+    for item in timeline_list_subset:
         if item.favorite_count >= 1000:
-            print_tweet(item, 'KEEP favourite')
+            print_tweet(item, 'KEEP favorited')
         elif keep_matching in item.text:
-            print_tweet(item, 'KEEP match')
+            print_tweet(item, 'KEEP matched')
         elif keybase_matching in item.text:
             print_tweet(item, 'KEEP keybase')
         else:
-            print_tweet(item, 'DELETE')
+            print_tweet(item, 'DELETE TWEET')
             if do_delete:
                 api.destroy_status(item.id)
+    print('Finished timeline, Starting favorites')
+    for item in favorites_list_subset:
+        print_tweet(item, 'DELETE FAVORITE')
+        if do_delete:
+            api.destroy_favorite(item.id)
 
 
 def lambda_handler(event, context):
     api = make_twapi()
-    pages = tweepy.Cursor(api.user_timeline, screen_name=screen_name).pages()
-    tweet_list = get_tweet_list(pages)
-    last_tweets_manage(api, tweet_list, do_delete)
+    timeline_pages = tweepy.Cursor(api.user_timeline, screen_name=screen_name).pages()
+    favourites_pages = tweepy.Cursor(api.favorites, screen_name=screen_name).pages()
+    timeline_list = get_timeline_list(timeline_pages)
+    favorites_list = get_favorites_list(favourites_pages)
+    delete_tweet_items(api, timeline_list, favorites_list, do_delete)
+
+
+if __name__=="__main__":
+
+    lambda_handler(False, False)

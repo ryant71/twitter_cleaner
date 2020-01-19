@@ -3,7 +3,7 @@
         "events": [{
             "function": "twitter_clean.lambda_handler",
             // "expressions": ["cron(15 0 * * ? *)"]
-            "expression": "rate(3 hours)"
+            "expression": "rate(6 hours)"
         }],
         "aws_region": "eu-west-1",
         "profile_name": "mine",

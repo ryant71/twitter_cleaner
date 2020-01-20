@@ -54,18 +54,18 @@ workflows:
     jobs:
 
       - build:
-        context: hg
+          context: hg
 
       - deploy_approval:
-        type: approval
-        requires:
-          - build
-        filters:
-          branches:
-            only:
-              - master
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - master
 
       - deploy_or_update:
-        context: hg
-        requires:
-          - deploy_approval
+          context: hg
+          requires:
+            - deploy_approval

@@ -65,7 +65,7 @@ workflows:
             only:
               master
 
-      - deploy_or_update
+      - deploy_or_update:
         context: hg
         requires:
           - deploy_approval

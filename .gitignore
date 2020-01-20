@@ -1,6 +1,7 @@
 # keep auth safe
 auth.py
 auth.pyc
+iam_policy.json
 
 *.pyc
 

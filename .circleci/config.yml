@@ -63,7 +63,7 @@ workflows:
         filters:
           branches:
             only:
-              master
+              - master
 
       - deploy_or_update:
         context: hg

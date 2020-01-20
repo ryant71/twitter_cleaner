@@ -64,6 +64,7 @@ workflows:
             branches:
               only:
                 - master
+                - get_cci_right
 
       - deploy_or_update:
           context: hg

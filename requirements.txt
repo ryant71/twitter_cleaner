@@ -1,3 +1,3 @@
 zappa
 tweepy
-docutils=docutils-0.15.2
+docutils=0.15.2

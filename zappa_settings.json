@@ -6,7 +6,7 @@
             "expression": "rate(6 hours)"
         }],
         "aws_region": "eu-west-1",
-        "profile_name": "zappa",
+        //"profile_name": "zappa",
         "project_name": "twitter-cleaner",
         "runtime": "python3.7",
         "s3_bucket": "zappa-twit",

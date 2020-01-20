@@ -24,8 +24,7 @@ jobs:
       - run:
           name: test
           command: |
-            echo $PATH
-            zappa status
+            ./venv/bin/zappa status
 
 
       - save_cache:
@@ -52,7 +51,7 @@ jobs:
       - run:
           name: deploy
           command: |
-            zappa update production || zappa deploy production
+            ./venv/bin/zappa update production || ./venv/bin/zappa deploy production
 
 
 workflows:

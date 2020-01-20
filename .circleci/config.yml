@@ -21,6 +21,12 @@ jobs:
             . venv/bin/activate
             pip install -r requirements.txt
 
+      - run:
+          name: test
+          command: |
+            zappa status
+
+
       - save_cache:
           paths:
             - ./venv

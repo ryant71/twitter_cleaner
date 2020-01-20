@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 https://www.karambelkar.info/2015/01/how-to-use-twitters-search-rest-api-most-effectively./

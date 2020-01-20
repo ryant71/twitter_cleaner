@@ -51,6 +51,7 @@ jobs:
       - run:
           name: deploy
           command: |
+            . venv/bin/activate
             ./venv/bin/zappa update production || ./venv/bin/zappa deploy production
 
 

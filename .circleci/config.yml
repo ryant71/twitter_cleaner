@@ -24,8 +24,6 @@ jobs:
       - run:
           name: test
           command: |
-            pwd
-            ls
             ./venv/bin/zappa status
 
 
@@ -55,8 +53,6 @@ jobs:
       - run:
           name: deploy
           command: |
-            pwd
-            ls
             . venv/bin/activate
             ./venv/bin/zappa update production || ./venv/bin/zappa deploy production
 
@@ -77,7 +73,6 @@ workflows:
             branches:
               only:
                 - master
-                - get_cci_right
 
       - deploy_or_update:
           context: hg

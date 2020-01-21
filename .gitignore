@@ -2,6 +2,7 @@
 auth.py
 auth.pyc
 iam_policy.json
+.env
 
 *.pyc
 

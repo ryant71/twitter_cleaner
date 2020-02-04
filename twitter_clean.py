@@ -26,10 +26,10 @@ keep_matching = '#keep'
 keybase_matching = 'GF-1BjCID_I45YXm_UIqknVq0gjbAvKhGLOC'
 
 ssm = boto3.client('ssm')
-consumer_key = ssm.get_parameter(Name='consumer_key', WithEncryption=True)
-consumer_secret = ssm.get_parameter(Name='consumer_secret', WithEncryption=True)
-access_token_key = ssm.get_parameter(Name='access_token_key', WithEncryption=True)
-access_token_secret = ssm.get_parameter(Name='access_token_secret', WithEncryption=True)
+consumer_key = ssm.get_parameter(Name='consumer_key', WithDecryption=True)
+consumer_secret = ssm.get_parameter(Name='consumer_secret', WithDecryption=True)
+access_token_key = ssm.get_parameter(Name='access_token_key', WithDecryption=True)
+access_token_secret = ssm.get_parameter(Name='access_token_secret', WithDecryption=True)
 
 
 def vprint(msg):

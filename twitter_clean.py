@@ -7,10 +7,8 @@ https://www.karambelkar.info/2015/01/how-to-use-twitters-search-rest-api-most-ef
 import sys
 import time
 import tweepy
+import boto3
 from datetime import datetime, timedelta
-from auth import consumer_key, consumer_secret
-from auth import access_token_key, access_token_secret, screen_name
-
 
 sleeptime = 0.2
 exception_sleeptime = 60
@@ -26,6 +24,12 @@ keep_last_n_tweets = 7
 delete_matching = 'me // automatically checked by'
 keep_matching = '#keep'
 keybase_matching = 'GF-1BjCID_I45YXm_UIqknVq0gjbAvKhGLOC'
+
+ssm = boto3.client('ssm')
+consumer_key = ssm.get_parameter(Name='consumer_key', WithEncryption=True)
+consumer_secret = ssm.get_parameter(Name='consumer_secret', WithEncryption=True)
+access_token_key = ssm.get_parameter(Name='access_token_key', WithEncryption=True)
+access_token_secret = ssm.get_parameter(Name='access_token_secret', WithEncryption=True)
 
 
 def vprint(msg):
@@ -132,8 +136,8 @@ def delete_tweet_items(api, timeline_list, favorites_list, do_delete):
 
 def lambda_handler(event, context):
     api = make_twapi()
-    timeline_pages = tweepy.Cursor(api.user_timeline, screen_name=screen_name).pages()
-    favourites_pages = tweepy.Cursor(api.favorites, screen_name=screen_name).pages()
+    timeline_pages = tweepy.Cursor(api.user_timeline).pages()
+    favourites_pages = tweepy.Cursor(api.favorites).pages()
     timeline_list = get_timeline_list(timeline_pages)
     favorites_list = get_favorites_list(favourites_pages)
     delete_tweet_items(api, timeline_list, favorites_list, do_delete)

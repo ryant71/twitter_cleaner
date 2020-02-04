@@ -26,10 +26,10 @@ keep_matching = '#keep'
 keybase_matching = 'GF-1BjCID_I45YXm_UIqknVq0gjbAvKhGLOC'
 
 ssm = boto3.client('ssm')
-consumer_key = ssm.get_parameter(Name='/lambda/twitter_cleaner/consumer_key', WithDecryption=True)
-consumer_secret = ssm.get_parameter(Name='/lambda/twitter_cleaner/consumer_secret', WithDecryption=True)
-access_token_key = ssm.get_parameter(Name='/lambda/twitter_cleaner/access_token_key', WithDecryption=True)
-access_token_secret = ssm.get_parameter(Name='/lambda/twitter_cleaner/access_token_secret', WithDecryption=True)
+consumer_key = ssm.get_parameter(Name='/lambda/twitter_cleaner/consumer_key', WithDecryption=True)['Parameter']['Value']
+consumer_secret = ssm.get_parameter(Name='/lambda/twitter_cleaner/consumer_secret', WithDecryption=True)['Parameter']['Value']
+access_token_key = ssm.get_parameter(Name='/lambda/twitter_cleaner/access_token_key', WithDecryption=True)['Parameter']['Value']
+access_token_secret = ssm.get_parameter(Name='/lambda/twitter_cleaner/access_token_secret', WithDecryption=True)['Parameter']['Value']
 
 
 def vprint(msg):
